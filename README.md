@@ -1,5 +1,14 @@
 ## Различные алгоритмы на python
 
+- [Алгоритмы сортировки](#алгоритмы-сортировки)
+- [Алгоритмы поиска](#aлгоритмы-поиска)
+- [Алгоритмы сжатия](#aлгоритмы-сжатия)
+- [Парсинг json файла](#парсинг-json-файла)
+- [Парсинг xml файла](#парсинг-xml-файла)
+- [Алгоритмы слияния](#алгоритмы-слияния)
+- [Алгоритмы сложения](#алгоритмы-сложения)
+
+
 #### Алгоритмы сортировки
 - Алгоритм сортировки пузырьком (Bubble Sort):
 
@@ -116,6 +125,64 @@ def linear_search(arr, target):
     for i in range(len(arr)):
         if arr[i] == target:
             return i
+    return -1
+
+```
+
+- Интерполяционный поиск (Interpolation search):
+
+```python
+def interpolation_search(arr, target):
+    low = 0
+    high = len(arr) - 1
+
+    while low <= high and arr[low] <= target <= arr[high]:
+        pos = low + ((target - arr[low]) * (high - low)) // (arr[high] - arr[low])
+
+        if arr[pos] == target:
+            return pos
+        elif arr[pos] < target:
+            low = pos + 1
+        else:
+            high = pos - 1
+
+    return -1
+
+```
+
+- Алгоритм поиска по Фибоначчи (Fibonacci search):
+
+```python
+def fibonacci_search(arr, target):
+    fib2 = 0
+    fib1 = 1
+    fib = fib1 + fib2
+
+    while fib < len(arr):
+        fib2 = fib1
+        fib1 = fib
+        fib = fib1 + fib2
+
+    offset = -1
+
+    while fib > 1:
+        i = min(offset + fib2, len(arr) - 1)
+
+        if arr[i] == target:
+            return i
+        elif arr[i] < target:
+            fib = fib1
+            fib1 = fib2
+            fib2 = fib - fib1
+            offset = i
+        else:
+            fib = fib2
+            fib1 = fib1 - fib2
+            fib2 = fib - fib1
+
+    if fib1 and arr[offset + 1] == target:
+        return offset + 1
+
     return -1
 
 ```
@@ -515,3 +582,121 @@ for employee in employees:
     
 
 ```
+
+
+#### Алгоритмы слияния
+
+- Сортировка слиянием (Merge Sort):
+
+```python
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+
+    mid = len(arr) // 2
+    left = arr[:mid]
+    right = arr[mid:]
+
+    left = merge_sort(left)
+    right = merge_sort(right)
+
+    return merge(left, right)
+
+def merge(left, right):
+    merged = []
+    i = j = 0
+
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            merged.append(left[i])
+            i += 1
+        else:
+            merged.append(right[j])
+            j += 1
+
+    while i < len(left):
+        merged.append(left[i])
+        i += 1
+
+    while j < len(right):
+        merged.append(right[j])
+        j += 1
+
+    return merged
+```
+
+#### Алгоритмы сложения
+
+- Сложение "столбиком" (Addition "column"):
+
+```python
+def addition(a, b):
+    result = []
+    carry = 0
+
+    while a or b or carry:
+        digit = carry
+
+        if a:
+            digit += a.pop()
+
+        if b:
+            digit += b.pop()
+
+        carry = digit // 10
+        result.append(digit % 10)
+
+    return result[::-1]
+
+```
+
+- Сложение по разрядам (рекурсивный подход) (Addition by digits (recursive approach)):
+
+```python
+def addition(a, b):
+    if not a:
+        return b
+    if not b:
+        return a
+
+    result = []
+    digit_sum = a[-1] + b[-1]
+    carry = digit_sum // 10
+
+    result.extend(addition(a[:-1], b[:-1]))
+    result.append(digit_sum % 10)
+
+    if carry:
+        result = addition(result, [carry])
+
+    return result
+
+```
+
+- Сложение двух чисел в виде строк (Adding two numbers as strings):
+
+```python
+def addition(a, b):
+    result = []
+    carry = 0
+    i = len(a) - 1
+    j = len(b) - 1
+
+    while i >= 0 or j >= 0 or carry:
+        digit = carry
+
+        if i >= 0:
+            digit += int(a[i])
+            i -= 1
+
+        if j >= 0:
+            digit += int(b[j])
+            j -= 1
+
+        carry = digit // 10
+        result.append(str(digit % 10))
+
+    return ''.join(result[::-1])
+
+```
+
